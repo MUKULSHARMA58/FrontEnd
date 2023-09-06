@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import Home from './Screens/Home';
+import AllRouting from './Routing/AllRouting';
+import CombineRouting from './Routing/CombineRouting';
+import axios from "axios";
+import { Base_URL } from "./Config/BaseURL";
+import { useEffect } from "react";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+  const [cartCount, setCartCount] = useState(0)
+   
+  function getCartCount(){
+      let u_id =  localStorage.getItem('auth-id')
+      axios.get(Base_URL + '/get-cart-count' , {params : {u_id : u_id} }).then((res)=>{
+          console.log(res.data)
+          console.log("hi")
+        setCartCount(res.data.count)
+        localStorage.setItem('count' ,res.data.count ) 
+      }).catch((err)=>{
+        setCartCount(0)
+
+      })
+    }
+
+
+    useEffect(()=>{
+      getCartCount()
+    },[])
+
+
+ 
+  return ( 
+    <>
+     <CombineRouting  countOfCart = {cartCount} />
+    </>
   );
 }
 
